@@ -1,5 +1,6 @@
 package com.mission.globalknowledge.entity;
 
+import com.mission.globalknowledge.dto.PostDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,8 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
+    public Post(PostDto.Request.Save save) {
+        this.title= save.getTitle();
+        this.content = save.getContent();
+    }
 }
