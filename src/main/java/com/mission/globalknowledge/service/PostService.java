@@ -49,16 +49,16 @@ public class PostService {
         return new PostDto.Response.Post();
     }
 
-    public Long save(PostDto.Request.Save save) {
+    public Post save(PostDto.Request.Save save) {
         log.info("###_{} PostService save",txId);
         Post post = new Post(save);
-        return postRepository.save(post).getId();
+        return postRepository.save(post);
     }
 
     /**
      * List<Post> -> List<PostDto.Response.PostList>
      */
-    public List<PostDto.Response.Post> changDto(List<Post> postList) {
+    private List<PostDto.Response.Post> changDto(List<Post> postList) {
         if (postList != null) {
             return postList.stream()
                     .map(m -> PostDto.Response.Post.builder()
