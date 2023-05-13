@@ -21,4 +21,9 @@ public class PostWord {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Post post;
+
+    public PostWord(String word, Post post) {
+        this.word = word;
+        this.post = post;
+    }
 }
