@@ -21,13 +21,17 @@ public class PostWordService {
     private final PostWordRepository postWordRepository;
     private final TxId txId;
 
-    public void save(PostDto.Request.Save postDto, Post post) {
+    /**
+     * Save
+     */
+    public void save(PostDto.Request.Save postDto, Long postId) {
         log.info("###_{} PostWordService save",txId);
         List<String> words = parsingWord(postDto.getContent());
 
-        List<PostWord> postWords = words.stream().map(word -> new PostWord(word, post)).toList();
+        List<PostWord> postWords = words.stream().map(word -> new PostWord(word, postId)).toList();
         postWordRepository.saveAll(postWords);
     }
+
 
     /**
      * content -> List<String> words
@@ -40,5 +44,51 @@ public class PostWordService {
             words.addAll(uniqueWords);
         }
         return words;
+    }
+
+    public Set<String> calculateDuplicateWord() {
+        HashMap<Long, List<String>> postWordList = findAll(); // 전체 게시글 가져옴
+
+        double duplication_radio = 0.4; // 중복 비율 값 설정
+
+        Set<Long> keySet = postWordList.keySet();
+
+        int keySize = keySet.size();
+        double duplicate_value = keySize * duplication_radio; // 40%가 되는 값
+
+        // 전체 게시글을 돌면서 게시글 마다 갖고 있는 단어가 중복되어 나올 경우 +1씩 진행
+        Map<String, Integer> countMap = new HashMap<>(); // 중복 횟수를 저장할 Map
+        for (Long key : keySet) {
+            List<String> wordList = postWordList.get(key); //게시글이 갖고 있는 단어 배열
+            for (String word : wordList) {
+                countMap.put(word, countMap.getOrDefault(word, 0) + 1);
+            }
+        }
+        
+        Set<String> duplicates = new HashSet<>(); // 중복된 문자열을 저장할 Set
+        
+        // 중복 비율 40% 이상 일 경우만 duplicates 에 단어를 추가함
+        Set<String> strings = countMap.keySet();
+        for (String str : strings) {
+            if (countMap.get(str) > duplicate_value) {
+                duplicates.add(str);
+            }
+        }
+
+        return duplicates;
+    }
+
+
+    /**
+     * findALl
+     */
+    public HashMap<Long, List<String>> findAll() {
+        List<Long> postIdList = postWordRepository.findAllPostId();
+        HashMap<Long, List<String>> postWordList = new HashMap<>();
+        for (Long postId : postIdList) {
+            List<String> words = postWordRepository.findAllWordByPostId(postId);
+            postWordList.put(postId, words);
+        }
+        return postWordList;
     }
 }
