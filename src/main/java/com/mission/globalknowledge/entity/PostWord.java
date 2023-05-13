@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(indexes = @Index(name = "idx_postId", columnList = "postId"))
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostWord {
@@ -18,12 +19,11 @@ public class PostWord {
     @Column(nullable = false, length = 25, unique = true)
     private String word;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    private Post post;
+    @Column(nullable = false, unique = true)
+    private Long postId;
 
-    public PostWord(String word, Post post) {
+    public PostWord(String word, Long postId) {
         this.word = word;
-        this.post = post;
+        this.postId = postId;
     }
 }
