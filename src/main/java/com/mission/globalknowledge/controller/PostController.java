@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -36,14 +37,36 @@ public class PostController {
     }
 
     /**
-     * 게사글 조회
+     * 게시글 조회
      */
     @GetMapping("/post/{id}")
     public ResponseEntity<?> findPost(@PathVariable(value = "id")Long id) {
         log.info("###_{} PostController findPost",txId);
-        PostDto.Response.Post post = postService.findById(id);
+        PostDto.Response.Post post = postService.findById(id); //게시글가져옴
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
+
+    /**
+     * 연간 게시글 조회
+     */
+    @GetMapping("/post/{id}/relation ")
+    public ResponseEntity<?> findRelationPost(@PathVariable(value = "id")Long id) {
+        log.info("###_{} PostController findRelationPost",txId);
+
+        PostDto.Response.Post post = postService.findById(id); //게시글가져옴
+
+        // 전제 게시글 40% 이상 String 가져옴
+        Set<String> stringList = postWordService.calculateDuplicateWord();
+
+        // 본문의 String[] 에서 60% 계산된 [] 제거함
+
+        // 남은 본문의 String[] 로 postWord 돌면서 유사도 계산
+
+        // 유사도 높은 게시글 반환
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
 
     // Post 저장 & PostWord
     @PostMapping("/post")
@@ -51,7 +74,7 @@ public class PostController {
         log.info("###_{} PostController save",txId);
 
         Post post = postService.save(postDto); // post 저장
-        postWordService.save(postDto, post); // postWord 저장
+        postWordService.save(postDto, post.getId()); // postWord 저장
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
