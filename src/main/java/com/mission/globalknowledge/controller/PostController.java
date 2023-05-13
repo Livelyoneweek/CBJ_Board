@@ -39,6 +39,7 @@ public class PostController {
 
     @PostMapping("/post")
     public ResponseEntity<?> save(PostDto.Request.Save postDto) {
+        log.info("###_{} PostController save",txId);
         postService.save(postDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

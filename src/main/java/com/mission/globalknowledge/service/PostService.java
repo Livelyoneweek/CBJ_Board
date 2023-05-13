@@ -50,6 +50,7 @@ public class PostService {
     }
 
     public Long save(PostDto.Request.Save save) {
+        log.info("###_{} PostService save",txId);
         Post post = new Post(save);
         return postRepository.save(post).getId();
     }
