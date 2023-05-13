@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Transactional
 @RequiredArgsConstructor
@@ -27,8 +25,7 @@ public class PostWordService {
         log.info("###_{} PostWordService save",txId);
         List<String> words = parsingWord(postDto.getContent());
 
-        List<PostWord> postWords = words.stream()
-                .map(word -> new PostWord(word, post)).toList();
+        List<PostWord> postWords = words.stream().map(word -> new PostWord(word, post)).toList();
         postWordRepository.saveAll(postWords);
     }
 
@@ -39,7 +36,8 @@ public class PostWordService {
         List<String> words = new ArrayList<>();
         if (content != null && !content.isEmpty()) {
             String[] strings = content.replaceAll("\\s+", " ").trim().split(" ");
-            words.addAll(Arrays.asList(strings));
+            Set<String> uniqueWords = new HashSet<>(Arrays.asList(strings));
+            words.addAll(uniqueWords);
         }
         return words;
     }
