@@ -4,8 +4,53 @@
     <meta charset="UTF-8">
     <title>게시글</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .center-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 7vh;
+        }
+
+        .center-text span {
+            font-size: 48px;
+            animation: wave 1.5s ease-in-out;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes wave {
+            0%, 40%, 100% {transform: translateY(0);}
+            20%{transform: translateY(-15px);}
+            60%{transform: translateY(-5px);}
+        }
+
+        .center-text span:nth-child(1) {animation-delay: 0.1s;}
+        .center-text span:nth-child(2) {animation-delay: 0.12s;}
+        .center-text span:nth-child(3) {animation-delay: 0.14s;}
+        .center-text span:nth-child(4) {animation-delay: 0.16s;}
+        .center-text span:nth-child(5) {animation-delay: 0.18s;}
+        .center-text span:nth-child(6) {animation-delay: 0.20s;}
+        .center-text span:nth-child(7) {animation-delay: 0.20s;}
+        .center-text span:nth-child(8) {animation-delay: 0.22s;}
+        .center-text span:nth-child(9) {animation-delay: 0.24s;}
+        .center-text span:nth-child(10) {animation-delay: 0.26s;}
+        .center-text span:nth-child(11) {animation-delay: 0.28s;}
+        .center-text span:nth-child(12) {animation-delay: 0.30s;}
+        .center-text span:nth-child(13) {animation-delay: 0.32s;}
+        .center-text span:nth-child(14) {animation-delay: 0.34s;}
+        .center-text span:nth-child(15) {animation-delay: 0.36s;}
+        .center-text span:nth-child(16) {animation-delay: 0.38s;}
+    </style>
 </head>
 <body>
+<header class="bg-primary text-white">
+    <div class="container center-text">
+        <span>G</span><span>l</span><span>o</span>
+        <span>b</span><span>a</span><span>l</span><span>&nbsp;</span>
+        <span>K</span><span>n</span><span>o</span><span>w</span>
+        <span>l</span><span>e</span><span>d</span><span>g</span><span>e</span>
+    </div>
+</header>
 <div class="container">
     <h1 id="postTitle" class="mt-5"></h1>
     <div id="postContent" class="mt-4"></div>
