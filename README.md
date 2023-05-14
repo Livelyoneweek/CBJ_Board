@@ -1,6 +1,8 @@
 # Global Knowledge mission
 <br/>
 사용 기술:<br/>
+* Java 17✔<br/>
+* Spring boot 3.0.6✔<br/>
 * Spring Web ✔<br/>
 * Spring Data JPA ✔<br/>
 
@@ -11,6 +13,5 @@
 
 <br/>
 구동 방법:<br/>
-* ~~~<br/>
-* ~~~<br/>
+* 프로젝트 내려받은 후 localhost:17443/ 접속하여 진행
 
