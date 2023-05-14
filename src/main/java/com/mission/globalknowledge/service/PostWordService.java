@@ -25,7 +25,7 @@ public class PostWordService {
      */
     public void save(PostDto.Request.Save postDto, Long postId) {
         log.info("###_{} PostWordService save",txId);
-        List<String> words = parsingWord(postDto.getContent());
+        Set<String> words = parsingWord(postDto.getContent());
 
         List<PostWord> postWords = words.stream().map(word -> new PostWord(word, postId)).toList();
         postWordRepository.saveAll(postWords);
@@ -84,9 +84,7 @@ public class PostWordService {
         for (Map.Entry<Long, Integer> entry : sortedMapEntries) {
             postIdList.add(entry.getKey());
         }
-
         return postIdList;
-
     }
 
     private Map<Long, Integer> getOverlappingWordCount(List<String> duplicateWord40Down, HashMap<Long, List<String>> postWordList) {
@@ -140,13 +138,12 @@ public class PostWordService {
     /**
      * content -> List<String> words
      */
-    private List<String> parsingWord(String content) {
+    private Set<String> parsingWord(String content) {
         log.info("###_{} PostWordService parsingWord",txId);
-        List<String> words = new ArrayList<>();
+        Set<String> words = new HashSet<>();
         if (content != null && !content.isEmpty()) {
             String[] strings = content.replaceAll("\\s+", " ").trim().split(" ");
-            Set<String> uniqueWords = new HashSet<>(Arrays.asList(strings));
-            words.addAll(uniqueWords);
+            words.addAll(Arrays.asList(strings));
         }
         return words;
     }
