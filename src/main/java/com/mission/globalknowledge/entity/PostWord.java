@@ -16,10 +16,10 @@ public class PostWord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 25, unique = true)
+    @Column(nullable = false, length = 50)
     private String word;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long postId;
 
     public PostWord(String word, Long postId) {
