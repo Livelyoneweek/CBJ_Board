@@ -30,7 +30,7 @@ public class PostService {
 
         List<Post> all = postRepository.findAll();
 
-        return changDto(all);
+        return changeDto(all);
     }
 
     @Transactional(readOnly = true)
@@ -54,15 +54,15 @@ public class PostService {
         log.info("###_{} PostService findByIds",txId);
 
         // 3개까지만 출력
-        List<Post> posts;
+        List<Post> postList;
         if (postIdList.size() > 3) {
             List<Long> firstThreePostIds = postIdList.stream().limit(3).toList();
-            posts = postRepository.findByIdIn(firstThreePostIds);
+            postList = postRepository.findByIdIn(firstThreePostIds);
         } else {
-            posts = postRepository.findByIdIn(postIdList);
+            postList = postRepository.findByIdIn(postIdList);
         }
 
-        return changDto(posts);
+        return changeDto(postList);
     }
 
     public Post save(PostDto.Request.Save save) {
@@ -74,7 +74,7 @@ public class PostService {
     /**
      * List<Post> -> List<PostDto.Response.PostList>
      */
-    private List<PostDto.Response.Post> changDto(List<Post> postList) {
+    private List<PostDto.Response.Post> changeDto(List<Post> postList) {
         if (postList != null) {
             return postList.stream()
                     .map(m -> PostDto.Response.Post.builder()
