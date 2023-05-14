@@ -1,7 +1,6 @@
 package com.mission.globalknowledge.service;
 
 import com.mission.globalknowledge.dto.PostDto;
-import com.mission.globalknowledge.entity.Post;
 import com.mission.globalknowledge.entity.PostWord;
 import com.mission.globalknowledge.repository.PostWordRepository;
 import com.mission.globalknowledge.util.TxId;
@@ -32,22 +31,78 @@ public class PostWordService {
         postWordRepository.saveAll(postWords);
     }
 
-
     /**
-     * content -> List<String> words
+     * findALl postWord
      */
-    private List<String> parsingWord(String content) {
-        List<String> words = new ArrayList<>();
-        if (content != null && !content.isEmpty()) {
-            String[] strings = content.replaceAll("\\s+", " ").trim().split(" ");
-            Set<String> uniqueWords = new HashSet<>(Arrays.asList(strings));
-            words.addAll(uniqueWords);
+    public HashMap<Long, List<String>> findAllPostWord() {
+        List<Long> postIdList = postWordRepository.findAllPostId();
+        HashMap<Long, List<String>> postWordList = new HashMap<>();
+        for (Long postId : postIdList) {
+            List<String> words = postWordRepository.findAllWordByPostId(postId);
+            postWordList.put(postId, words);
         }
-        return words;
+        return postWordList;
     }
 
-    public Set<String> calculateDuplicateWord() {
-        HashMap<Long, List<String>> postWordList = findAll(); // 전체 게시글 가져옴
+    /**
+     * findAll word
+     */
+    public List<String> findAllWord(Long postId) {
+        return postWordRepository.findAllWordByPostId(postId);
+    }
+
+    public List<Long> findRelationPost(Long postId) {
+
+        // 전체 게시글에 WordList 가져옴
+        HashMap<Long, List<String>> postWordList = findAllPostWord();
+
+        // 전제 게시글 40% 이상 중복된 String 가져옴
+        Set<String> duplicateWord40Up = calculateDuplicateWord(postWordList);
+
+        // 본문의 String[] 가져옴
+        List<String> allWord = postWordList.get(postId);
+
+        // 본문의 String[] 에서 40% 이상 중복된 String 계산된 [] 제거함
+        List<String> duplicateWord40Down = new ArrayList<>();
+        for (String word : allWord) {
+            if (!duplicateWord40Up.contains(word)) {
+                duplicateWord40Down.add(word);
+            }
+        }
+
+        // 남은 본문의 String[] 로 postWord 돌면서 단어 2개 이상 중복 한 게시글 id return
+        Map<Long, Integer> overlappingWordCount = getOverlappingWordCount(duplicateWord40Down, postWordList);
+
+        // 중복 단어가 높은 순서대로 정렬
+        List<Map.Entry<Long, Integer>> sortedMapEntries = new ArrayList<>(overlappingWordCount.entrySet());
+        Collections.sort(sortedMapEntries, (o1, o2) -> o2.getValue() - o1.getValue());
+        List<Long> postIdList = new ArrayList<>();
+        for (Map.Entry<Long, Integer> entry : sortedMapEntries) {
+            postIdList.add(entry.getKey());
+        }
+
+        return postIdList;
+
+    }
+
+    private Map<Long, Integer> getOverlappingWordCount(List<String> duplicateWord40Down, HashMap<Long, List<String>> postWordList) {
+        Map<Long, Integer> overlappingWordCountMap = new HashMap<>();
+        for (Map.Entry<Long, List<String>> entry : postWordList.entrySet()) {
+            List<String> words = entry.getValue();
+            int overlappingWordCount = 0;
+            for (String word : duplicateWord40Down) {
+                if (words.contains(word)) {
+                    overlappingWordCount++;
+                }
+            }
+            if (overlappingWordCount >= 2) {
+                overlappingWordCountMap.put(entry.getKey(), overlappingWordCount);
+            }
+        }
+        return overlappingWordCountMap;
+    }
+
+    private Set<String> calculateDuplicateWord(HashMap<Long, List<String>> postWordList) {
 
         double duplication_radio = 0.4; // 중복 비율 값 설정
 
@@ -74,21 +129,19 @@ public class PostWordService {
                 duplicates.add(str);
             }
         }
-
         return duplicates;
     }
 
-
     /**
-     * findALl
+     * content -> List<String> words
      */
-    public HashMap<Long, List<String>> findAll() {
-        List<Long> postIdList = postWordRepository.findAllPostId();
-        HashMap<Long, List<String>> postWordList = new HashMap<>();
-        for (Long postId : postIdList) {
-            List<String> words = postWordRepository.findAllWordByPostId(postId);
-            postWordList.put(postId, words);
+    private List<String> parsingWord(String content) {
+        List<String> words = new ArrayList<>();
+        if (content != null && !content.isEmpty()) {
+            String[] strings = content.replaceAll("\\s+", " ").trim().split(" ");
+            Set<String> uniqueWords = new HashSet<>(Arrays.asList(strings));
+            words.addAll(uniqueWords);
         }
-        return postWordList;
+        return words;
     }
 }
