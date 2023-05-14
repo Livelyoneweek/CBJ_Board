@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -55,16 +54,10 @@ public class PostController {
 
         PostDto.Response.Post post = postService.findById(id); //게시글가져옴
 
-        // 전제 게시글 40% 이상 String 가져옴
-        Set<String> stringList = postWordService.calculateDuplicateWord();
+        List<Long> relationPostIds = postWordService.findRelationPost(post.getId());
+        List<PostDto.Response.Post> postDtoList = postService.findByIds(relationPostIds);
 
-        // 본문의 String[] 에서 60% 계산된 [] 제거함
-
-        // 남은 본문의 String[] 로 postWord 돌면서 유사도 계산
-
-        // 유사도 높은 게시글 반환
-
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        return new ResponseEntity<>(postDtoList, HttpStatus.OK);
     }
 
 

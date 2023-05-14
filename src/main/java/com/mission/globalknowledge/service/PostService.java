@@ -49,6 +49,22 @@ public class PostService {
         return new PostDto.Response.Post();
     }
 
+    @Transactional(readOnly = true)
+    public List<PostDto.Response.Post> findByIds(List<Long> postIdList) {
+        log.info("###_{} PostService findByIds",txId);
+
+        // 3개까지만 출력
+        List<Post> posts;
+        if (postIdList.size() > 3) {
+            List<Long> firstThreePostIds = postIdList.stream().limit(3).toList();
+            posts = postRepository.findByIdIn(firstThreePostIds);
+        } else {
+            posts = postRepository.findByIdIn(postIdList);
+        }
+
+        return changDto(posts);
+    }
+
     public Post save(PostDto.Request.Save save) {
         log.info("###_{} PostService save",txId);
         Post post = new Post(save);
