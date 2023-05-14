@@ -35,6 +35,7 @@ public class PostWordService {
      * findALl postWord
      */
     public HashMap<Long, List<String>> findAllPostWord() {
+        log.info("###_{} PostWordService findAllPostWord",txId);
         List<Long> postIdList = postWordRepository.findAllPostId();
         HashMap<Long, List<String>> postWordList = new HashMap<>();
         for (Long postId : postIdList) {
@@ -48,11 +49,12 @@ public class PostWordService {
      * findAll word
      */
     public List<String> findAllWord(Long postId) {
+        log.info("###_{} PostWordService findAllWord",txId);
         return postWordRepository.findAllWordByPostId(postId);
     }
 
     public List<Long> findRelationPost(Long postId) {
-
+        log.info("###_{} PostWordService findRelationPost",txId);
         // 전체 게시글에 WordList 가져옴
         HashMap<Long, List<String>> postWordList = findAllPostWord();
 
@@ -86,6 +88,7 @@ public class PostWordService {
     }
 
     private Map<Long, Integer> getOverlappingWordCount(List<String> duplicateWord40Down, HashMap<Long, List<String>> postWordList) {
+        log.info("###_{} PostWordService getOverlappingWordCount",txId);
         Map<Long, Integer> overlappingWordCountMap = new HashMap<>();
         for (Map.Entry<Long, List<String>> entry : postWordList.entrySet()) {
             List<String> words = entry.getValue();
@@ -103,7 +106,7 @@ public class PostWordService {
     }
 
     private Set<String> calculateDuplicateWord(HashMap<Long, List<String>> postWordList) {
-
+        log.info("###_{} PostWordService calculateDuplicateWord",txId);
         double duplication_radio = 0.4; // 중복 비율 값 설정
 
         Set<Long> keySet = postWordList.keySet();
@@ -136,6 +139,7 @@ public class PostWordService {
      * content -> List<String> words
      */
     private List<String> parsingWord(String content) {
+        log.info("###_{} PostWordService parsingWord",txId);
         List<String> words = new ArrayList<>();
         if (content != null && !content.isEmpty()) {
             String[] strings = content.replaceAll("\\s+", " ").trim().split(" ");
