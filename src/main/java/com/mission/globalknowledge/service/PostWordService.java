@@ -34,6 +34,7 @@ public class PostWordService {
     /**
      * findALl postWord
      */
+    @Transactional(readOnly = true)
     public HashMap<Long, List<String>> findAllPostWord() {
         log.info("###_{} PostWordService findAllPostWord",txId);
         List<Long> postIdList = postWordRepository.findAllPostId();
@@ -48,6 +49,7 @@ public class PostWordService {
     /**
      * findAll word
      */
+    @Transactional(readOnly = true)
     public List<String> findAllWord(Long postId) {
         log.info("###_{} PostWordService findAllWord",txId);
         return postWordRepository.findAllWordByPostId(postId);
