@@ -1,8 +1,8 @@
 # Global Knowledge mission
 <br/>
 사용 기술:<br/>
-* Java 17<br/>
-* Spring boot 3.0.6<br/>
+* Java 17✔<br/>
+* Spring boot 3.0.6✔<br/>
 * Spring Web ✔<br/>
 * Spring Data JPA ✔<br/>
 
