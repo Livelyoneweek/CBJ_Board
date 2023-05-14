@@ -1,17 +1,22 @@
 package com.mission.globalknowledge;
 
 import com.mission.globalknowledge.entity.Post;
+import com.mission.globalknowledge.entity.PostWord;
 import com.mission.globalknowledge.repository.PostRepository;
+import com.mission.globalknowledge.repository.PostWordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
 public class InitData {
 
     private final PostRepository postRepository;
+    private final PostWordRepository postWordRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
@@ -67,7 +72,25 @@ public class InitData {
         postRepository.save(new Post(title7, content7));
         postRepository.save(new Post(title8, content8));
 
+        postWordRepository.saveAll(parsingWord(content1).stream().map(word -> new PostWord(word, 1L)).toList());
+        postWordRepository.saveAll(parsingWord(content2).stream().map(word -> new PostWord(word, 2L)).toList());
+        postWordRepository.saveAll(parsingWord(content3).stream().map(word -> new PostWord(word, 3L)).toList());
+        postWordRepository.saveAll(parsingWord(content4).stream().map(word -> new PostWord(word, 4L)).toList());
+        postWordRepository.saveAll(parsingWord(content5).stream().map(word -> new PostWord(word, 5L)).toList());
+        postWordRepository.saveAll(parsingWord(content6).stream().map(word -> new PostWord(word, 6L)).toList());
+        postWordRepository.saveAll(parsingWord(content7).stream().map(word -> new PostWord(word, 7L)).toList());
+        postWordRepository.saveAll(parsingWord(content8).stream().map(word -> new PostWord(word, 8L)).toList());
+
         log.info("initData end");
+    }
+
+    private Set<String> parsingWord(String content) {
+        Set<String> words = new HashSet<>();
+        if (content != null && !content.isEmpty()) {
+            String[] strings = content.replaceAll("\\s+", " ").trim().split(" ");
+            words.addAll(Arrays.asList(strings));
+        }
+        return words;
     }
 
 }
