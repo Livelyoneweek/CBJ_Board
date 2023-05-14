@@ -23,12 +23,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final TxId txId;
 
-
     @Transactional(readOnly = true)
     public List<PostDto.Response.Post> findAll() {
         log.info("###_{} PostService findAll",txId);
 
         List<Post> all = postRepository.findAll();
+
         return changeDto(all);
     }
 
