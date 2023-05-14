@@ -33,5 +33,17 @@ public class PostDto {
             private LocalDateTime createDate;
             private LocalDateTime modifiedDate;
         }
+
+        @Getter
+        @AllArgsConstructor
+        @Builder
+        @NoArgsConstructor
+        public static class DetailPost {
+            private Long id;
+            private String title;
+            private String content;
+            private LocalDateTime createDate;
+            private LocalDateTime modifiedDate;
+        }
     }
 }
