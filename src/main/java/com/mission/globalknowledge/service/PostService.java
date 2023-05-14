@@ -29,7 +29,6 @@ public class PostService {
         log.info("###_{} PostService findAll",txId);
 
         List<Post> all = postRepository.findAll();
-
         return changeDto(all);
     }
 
