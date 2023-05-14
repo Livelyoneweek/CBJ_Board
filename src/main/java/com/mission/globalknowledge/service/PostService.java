@@ -34,19 +34,19 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostDto.Response.Post findById(Long id) {
+    public PostDto.Response.DetailPost findById(Long id) {
         log.info("###_{} PostService findById",txId);
 
         Optional<Post> postOptional = postRepository.findById(id);
         if (postOptional.isPresent()) {
             Post post = postOptional.get();
 
-            return new PostDto.Response.Post(
-                    post.getId(),post.getTitle(),post.getCreateDate(),post.getModifiedDate());
+            return new PostDto.Response.DetailPost(
+                    post.getId(),post.getTitle(),post.getContent(),post.getCreateDate(),post.getModifiedDate());
         }
 
         log.info("###_{} findById is null",txId);
-        return new PostDto.Response.Post();
+        return new PostDto.Response.DetailPost();
     }
 
     @Transactional(readOnly = true)
