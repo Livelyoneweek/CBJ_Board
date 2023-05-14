@@ -14,10 +14,9 @@ public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
     private Long id;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false, length = 1000)
