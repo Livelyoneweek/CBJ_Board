@@ -27,4 +27,9 @@ public class Post extends BaseTimeEntity {
         this.title= save.getTitle();
         this.content = save.getContent();
     }
+
+    public Post(String title, String content) {
+        this.title= title;
+        this.content = content;
+    }
 }
