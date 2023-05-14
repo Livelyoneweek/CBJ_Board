@@ -5,14 +5,12 @@ import com.mission.globalknowledge.entity.Post;
 import com.mission.globalknowledge.service.PostService;
 import com.mission.globalknowledge.service.PostWordService;
 import com.mission.globalknowledge.util.TxId;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,20 +39,27 @@ public class PostController {
     @GetMapping("/post/{id}")
     public ResponseEntity<?> findPost(@PathVariable(value = "id")Long id) {
         log.info("###_{} PostController findPost",txId);
-        PostDto.Response.Post post = postService.findById(id); //게시글가져옴
+        PostDto.Response.DetailPost post = postService.findById(id); //게시글가져옴
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     /**
      * 연간 게시글 조회
      */
-    @GetMapping("/post/{id}/relation ")
+    @GetMapping("/post/relation/{id}")
     public ResponseEntity<?> findRelationPost(@PathVariable(value = "id")Long id) {
         log.info("###_{} PostController findRelationPost",txId);
 
-        PostDto.Response.Post post = postService.findById(id); //게시글가져옴
+        // 게시글가져옴
+        PostDto.Response.DetailPost post = postService.findById(id);
 
+        // 연간 게시글 id 가져옴
         List<Long> relationPostIds = postWordService.findRelationPost(post.getId());
+        
+        // 본문과 같은 id는 삭제
+        relationPostIds.removeIf(postId -> postId.equals(id));
+
+        // 연간 게시글 id로 연간 게시글 가져옴
         List<PostDto.Response.Post> postDtoList = postService.findByIds(relationPostIds);
 
         return new ResponseEntity<>(postDtoList, HttpStatus.OK);
@@ -63,7 +68,7 @@ public class PostController {
 
     // Post 저장 & PostWord
     @PostMapping("/post")
-    public ResponseEntity<?> save(PostDto.Request.Save postDto) {
+    public ResponseEntity<?> save(@RequestBody @Valid PostDto.Request.Save postDto) {
         log.info("###_{} PostController save",txId);
 
         Post post = postService.save(postDto); // post 저장
